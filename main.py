@@ -4,7 +4,7 @@ from playwright.async_api import async_playwright
 async def login_outlook(email, password):
     try:
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
+            browser = await p.chromium.launch(headless=False)
             context = await browser.new_context()
             page = await context.new_page()
 
